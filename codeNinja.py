@@ -12,7 +12,6 @@ botname = 'codeninja'
 botid = SlackClient(config.bot_id['BOT_ID'])
 at_bot = "<@" + str(botid) + ">:"
 client_slack = SlackClient(config.slack_token['SLACK_TOKEN'])
-count = 0
 
 
 def parse_data(slack_data):
@@ -25,22 +24,24 @@ def parse_data(slack_data):
 
 
 def chat(inputcmd, channel):
+    # inputcmd = inputcmd.replace(str(at_bot) + " ", "")
     soverflowurl = "http://stackoverflow.com"
     for url in search(urllib.quote_plus(inputcmd.encode('utf8'))):
         if "http://stackoverflow.com/" in url:
             soverflowurl = url
+            client_slack.api_call("chat.postMessage", channel=channel, text=str(url), as_user=True)
             break
         else:
             continue
     try:
         r = requests.get(soverflowurl)
         pagecode = html.fromstring(r.content)
-        output = "```" + pagecode.cssselect('div.accepted-answer pre')[0].text + "```"      # code
+        output = "```" + pagecode.cssselect('div.accepted-answer pre code ')[0].text + "```"  # code
         client_slack.api_call("chat.postMessage", channel=channel, text=output, as_user=True)
     except IndexError:
         r = requests.get(soverflowurl)
         pagecode = html.fromstring(r.content)
-        output = "```" + pagecode.cssselect('td.answercell div.post-text')[0].text + "```"
+        output = "```" + pagecode.cssselect('td.answercell div.post-text code ')[0].text + "```"
         client_slack.api_call("chat.postMessage", channel=channel, text=output, as_user=True)
     except:
         print("Could not parse")
@@ -54,8 +55,6 @@ def ninjafy():
             inputcmd, channel = parse_data(client_slack.rtm_read())
             if inputcmd and channel:
                 chat(inputcmd, channel)
-                # count = count +1
-                # break
             time.sleep(1)
     else:
         print("Connection failed")
