@@ -2,8 +2,7 @@ import config
 from slackclient import SlackClient
 
 
-BOT_NAME = 'codeninja'
-
+BOT_NAME = 'ninja'
 
 client_slack = SlackClient(config.slack_token['SLACK_TOKEN'])
 
