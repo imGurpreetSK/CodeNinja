@@ -1,4 +1,4 @@
-# CodeNinja
+# CodeNinja [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 CodeNinja is a slack-bot created during HackTREC 2016, as a step towards increasing an individual's productivity.
 
